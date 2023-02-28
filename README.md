@@ -55,3 +55,6 @@ You can start making requests by passing the model name as the model parameter o
 
 OpenAI CLI:
 `openai api completions.create -m <FINE_TUNED_MODEL> -p <YOUR_PROMPT>`
+
+Example
+`openai -k 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 -o org-PwafGfC5oVQgjaAzYFmgp1ep  api completions.create -m davinci -p "What is machine to machine payment"`
