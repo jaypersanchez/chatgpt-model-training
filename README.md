@@ -60,5 +60,11 @@ Example
 `openai -k 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 -o org-PwafGfC5oVQgjaAzYFmgp1ep  api completions.create -m davinci -p "What is machine to machine payment"`
 
 `
-curl https://api.openai.com/v1/completions -H "Authorization: Bearer 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" -H "Content-Type: application/json" -d '{"prompt": "what is machine to machine payment or m2m", "model": "davinci"}'
+curl https://api.openai.com/v1/completions -H "Authorization: Bearer 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" -H "Content-Type: application/json" -d '{"prompt": "what is machine to machine payment or m2m", "model": "davinci"}'
+`
+
+To verify if API Key being used is authorized to use specific end points
+
+`
+curl https://api.openai.com/v1/models/davinci -H 'Authorization: Bearer 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'
 `
