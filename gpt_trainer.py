@@ -1,4 +1,6 @@
 import os
+from dotenv import load_dotenv
+load_dotenv()
 import openai
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QTextEdit, QDesktopWidget, QTableView, QPushButton, QTabWidget, QFileDialog
@@ -6,15 +8,30 @@ from PyQt5.QtGui import QColor, QPixmap
 #import requests
 import itertools
 import numpy as np
-import matplotlib as plt
+import matplotlib.pyplot as plt
+import matplotlib
 import pandas as pd
+import pickle
 from PyQt5.QtCore import QAbstractTableModel, Qt, QRect
 import tiktoken
 from openai.embeddings_utils import get_embedding
 from sklearn.impute import SimpleImputer
+from sklearn.manifold import TSNE
+from openai.embeddings_utils import (
+    get_embedding,
+    distances_from_embeddings,
+    tsne_components_from_embeddings,
+    chart_from_components,
+    indices_of_nearest_neighbors_from_distances,
+)
 
-openai.organization = "org-PwafGfC5oVQgjaAzYFmgp1ep"
-openai.api_key =  "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"
+EMBEDDING_MODEL = os.environ.get("EMBEDDING_MODEL")
+
+
+openai.organization = os.environ.get("ORG_ID")
+openai.api_key =  os.environ.get("API_KEY")
+
+
 
 class Satoshi(QWidget):
 
@@ -31,7 +48,7 @@ class Satoshi(QWidget):
         training_tab = QWidget()
         data_scaling_tab = QWidget()
         tabs.addTab(training_tab, 'Data Model Training')
-        tabs.addTab(data_scaling_tab, "Data Regression Model")
+        tabs.addTab(data_scaling_tab, "AWS Fine Food Review Embedding")
         training_tab.showMaximized()
         data_scaling_tab.showMaximized()
         #tabs.showMaximized() # Unable to maximize each tab
@@ -85,11 +102,62 @@ class Satoshi(QWidget):
         trainingtab.setGeometry(QRect(0, 0, self.width(), self.height()))
 
         # layout items for Data Regression Model
-        self.button_import_data_file = QPushButton('Import Data File')
-        self.button_import_data_file.clicked.connect(self.importDataFile)
+        self.button_import_data_file = QPushButton('Food Recommendations')
+        self.button_import_data_file.clicked.connect(self.embeddedRecommendations)
+        self.button_Food_Ratings = QPushButton("Food Ratings Visual View")
+        self.button_Food_Ratings.clicked.connect(self.plotFoodRatings)
         datascalingtab.addWidget(self.button_import_data_file)
+        datascalingtab.addWidget(self.button_Food_Ratings)
 
-    def importDataFile(self):
+    def plotFoodRatings(self):
+        fileName, _ = QFileDialog.getOpenFileName(None, "Select File", "", "All Files (*);;Python Files (*.py)")
+        colors = ["red", "darkorange", "gold", "turquoise", "darkgreen"]
+        if fileName:
+            #print(fileName)
+            df = pd.read_csv(fileName)
+            matrix = np.array(df.embedding.apply(eval).to_list())
+            tsne = TSNE(n_components=2, perplexity=15, random_state=42, init='random', learning_rate=200)
+            vis_dims = tsne.fit_transform(matrix)
+            vis_dims.shape
+            x = [x for x,y in vis_dims]
+            y = [y for x,y in vis_dims]
+            color_indices = df.Score.values - 1
+            colormap = matplotlib.colors.ListedColormap(colors)
+            plt.scatter(x,y, c=color_indices, cmap=colormap, alpha=3)
+            for score in [0,1,2,3,4]:
+                avg_x = np.array(x)[df.Score-1==score].mean()
+                avg_y = np.array(y)[df.Score-1==score].mean()
+                color = colors[score]
+                plt.scatter(avg_x, avg_y, marker='x', color=color, s=100)
+            plt.title("Amazon ratings visualized in language using t-SNE")
+
+    def embeddedRecommendations(self):
+        fileName, _ = QFileDialog.getOpenFileName(None, "Select File", "", "All Files (*);;Python Files (*.py)")
+        
+        embedding_cache_path = "./models/recommendations_embeddings_cache.pkl"
+        try: 
+            embedding_cache = pd.read_pickle(embedding_cache_path)
+        except FileNotFoundError:
+            embedding_cache = {}
+        with open(embedding_cache_path, "wb") as embedding_cache_file:
+                pickle.dump(embedding_cache, embedding_cache_file)
+
+        if fileName:
+            #print(fileName)
+            df = pd.read_csv(fileName)
+            #n_examples = 5
+            #df.head(n_examples)
+            df_summary = df['Summary'].values[0]
+            if(df_summary, EMBEDDING_MODEL) not in embedding_cache.keys():
+                embedding_cache[(df_summary, EMBEDDING_MODEL)] = get_embedding(df_summary, EMBEDDING_MODEL)
+            with open(embedding_cache_path, "wb") as embedding_cache_file:
+                pickle.dump(embedding_cache, embedding_cache_file)
+            output_embedding = embedding_cache[(df_summary, EMBEDDING_MODEL)]
+            print(f"\nSummary Values: {df['Summary'].values[0]}")
+            #print(f"\nOutput to be embedded: {output_embedding}")
+            print(f"\nEmbedded Values: {output_embedding[:10]}")
+
+    def RegressionScaling(self):
         fileName, _ = QFileDialog.getOpenFileName(None, "Select File", "", "All Files (*);;Python Files (*.py)")
         if fileName:
             print(fileName)
@@ -109,7 +177,6 @@ class Satoshi(QWidget):
             #print
             print(X)
             print(Y)
-
 
     # Send prompt to GPT
     def validate_model(self):
