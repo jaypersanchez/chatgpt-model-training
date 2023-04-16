@@ -20,8 +20,6 @@ token_tuning_params = {
 }
 
 # Initialize the OpenAI class
-#openai.organization = "org-PwafGfC5oVQgjaAzYFmgp1ep"
-#openai.api_key = "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"
 openai.organization = os.environ['OPENAI_ORG_KEY']
 openai.api_key = os.environ['OPENAI_API_KEY']
 
@@ -32,6 +30,7 @@ modelList = openai.Engine.list()
 
 # load the csv file 
 csv_data = [] 
+#need to cleanup data
 with open('./models/exchange.csv', 'r', encoding='utf-8') as csvfile: 
     reader = csv.reader(csvfile) 
     #for row in reader: 
