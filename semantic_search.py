@@ -30,22 +30,34 @@ modelList = openai.Engine.list()
 
 # load the csv file 
 csv_data = [] 
+counter = 1
 #need to cleanup data
 with open('./models/exchange.csv', 'r', encoding='utf-8') as csvfile: 
     reader = csv.reader(csvfile) 
-    #for row in reader: 
-        #csv_data.append(row) 
-    for i, row in enumerate(reader):
-        if i < 100:
-            csv_data.append(reader)
-    i += 1
-            
+    for row in reader:
+        #read only up to first 100 rows
+        if counter <= 100: 
+            csv_data.append(row) 
+            counter += 1
+    #for i, row in enumerate(reader):
+    #    if i < 100:
+    #        csv_data.append(reader)
+            #for _row in reader:
+            #    print(_row)
+    #i += 1
+#print(csv_data)
 # convert the csv data into a json format 
 json_data = json.dumps(csv_data)
+print(json_data)
+table = []
 res = openai.Embedding.create(data=json_data, model=embedding_model,input=json_data, params=max_tokens)
-print(res)
-embeddeing_list = [item["embedding"] for item in res["data"]]
-print(embeddeing_list)
+#print(res)
+embedding_list = [item["embedding"] for item in res["data"]]
+#print(embeddeing_list)
+for i in range(len(csv_data)):
+    #print( [csv_data[i] + " " + ''.join(map(str,embedding_list[i]))] )
+    table.append([csv_data[i], embedding_list[i]])
+print(table)
 
 # Establish a connection to the PostgreSQL database
 conn = psycopg2.connect("dbname=Satoshi user=postgres password=Ph1LL!fe host=localhost")
