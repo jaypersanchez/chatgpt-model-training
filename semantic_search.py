@@ -34,47 +34,28 @@ counter = 1
 #need to cleanup data
 with open('./models/exchange.csv', 'r', encoding='utf-8') as csvfile: 
     reader = csv.reader(csvfile) 
+    table = []
+    counter = 0
     for row in reader:
         #read only up to first 100 rows
         if counter <= 100: 
-            csv_data.append(row) 
+            csv_data = row
+            res = openai.Embedding.create(data=csv_data, model=embedding_model,input=csv_data, params=max_tokens)
+            embedding_list = [item["embedding"] for item in res["data"]]
+            table.append([csv_data, embedding_list[0]])
             counter += 1
-    #for i, row in enumerate(reader):
-    #    if i < 100:
-    #        csv_data.append(reader)
-            #for _row in reader:
-            #    print(_row)
-    #i += 1
-#print(csv_data)
-# convert the csv data into a json format 
-json_data = json.dumps(csv_data)
-print(json_data)
-table = []
-res = openai.Embedding.create(data=json_data, model=embedding_model,input=json_data, params=max_tokens)
-#print(res)
-embedding_list = [item["embedding"] for item in res["data"]]
-#print(embeddeing_list)
-for i in range(len(csv_data)):
-    #print( [csv_data[i] + " " + ''.join(map(str,embedding_list[i]))] )
-    table.append([csv_data[i], embedding_list[i]])
-print(table)
+#print(table)
 
 # Establish a connection to the PostgreSQL database
 conn = psycopg2.connect("dbname=Satoshi user=postgres password=Ph1LL!fe host=localhost")
 
 # Create a cursor object
-cur = conn.cursor()
+cursor = conn.cursor()
+for row in table:
+    csv_data = row[0]
+    embedding_list = row[1]
+    cursor.execute("INSERT INTO vectors (csv_data, embedding_list) VALUES (%s, %s)", (csv_data, embedding_list))
 
-#vectors = res[input]
-
-#print out the vector value of the data aboveprint(res)
-#get all the vector values from res.data[0].embedding
-#for i in range(len(vectors)):
-#     cur.execute("INSERT INTO vectors (text, vector) VALUES (%s, %s)", (res["input"][i], vectors[i]))
-     # Commit the changes
-
-#save into vectors table
-#conn.commit()
-     
-# Close the connection
+conn.commit()
 conn.close()
+print("Embedding Done")
