@@ -41,12 +41,37 @@ def create_embedding():
     reader = csv.reader(f)
     with open('./models/exchange_embeddings.csv', 'w', newline='') as f:
       writer = csv.writer(f)
-      #writer.writerow(['Text', 'Embedding'])
+      writer.writerow(['Text', 'Embedding'])
       for row in reader:
           text = row[0]
           embedding = get_embedding(text)
           writer.writerow([text, embedding])
+
+def semantic_search(text):
+  #load embedded file
+  n=3
+  pprint = True
+  datafile_path = "./models/exchange_embeddings.csv"
+  df = pd.read_csv(datafile_path)
+  #df['ada_embedding'] = df.ada_embedding.apply(eval).apply(np.array)
+  #peform search
+  search_text_embedding = get_embedding(
+    text,
+    model = embedding_model
+  )
+  df["similarity"] = df.embedding.apply(lambda x: cosine_similarity(x, search_text_embedding))
+  results = (
+        df.sort_values("similarity", ascending=False)
+        .head(n)
+        .combined.str.replace("Title: ", "")
+        .str.replace("; Content:", ": ")
+  )
+  if pprint:
+        for r in results:
+            print(r[:200])
+            print()
+  return results
         
 #prepareData()
-embedding_vector = create_embedding()
-#semantic_search("CANADIAN SECURITIES")
+#embedding_vector = create_embedding()
+semantic_search("CANADIAN SECURITIES")
