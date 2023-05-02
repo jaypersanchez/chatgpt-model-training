@@ -1,0 +1,78 @@
+
+
+A semantically searched database is a type of database that allows users to search for information based on the meaning of the data rather than the exact words used to describe that data. This type of search is typically done using Natural Language Processing (NLP) algorithms that are designed to recognize the meaning of words and phrases and match them to the relevant data stored in the database. Semantic search is often used to improve the accuracy and relevance of search results, allowing users to quickly find the information they are looking for.
+
+Database supporting semantical search(search by meanting of the information)
+1. Apache Solr
+2. IBM Watson Discovery
+3. Amazon CloudSearch
+4. Microsoft Azure Search
+5. Elasticsearch
+6. Algolia
+7. Google Cloud Natural Language API
+8. Bing Autosuggest API
+9. Wolfram Alpha
+
+Yes, Semantical search is supported by ChatGPT. ChatGPT is an AI-Powered Chatbot platform that allows users to create intelligent and automated conversations with customers. With its Semantical Search feature, ChatGPT can quickly search through its built-in database to find the most relevant answer to a customer's query.  To create a prompt to semantically search chatgpt, you will need to write a script using natural language processing (NLP) tools. The script should include an algorithm that will parse the user's input, identify the relevant terms, and then use those terms to search chatgpt for relevant results. Additionally, the script should be able to detect and address any grammar or spelling errors in the user's input.
+
+
+1. Start by researching existing algorithms and tools for semantic search. This will help you understand how semantic search works and what kind of code you will need to write.
+
+2. Create a data structure with the elements of the semantic search. This should include the keywords and phrases that should be used to determine the context of the search.
+
+3. Create a script that is capable of parsing the text entered by the user and identifying the relevant keywords and phrases.
+
+4. Develop a search algorithm that takes the identified keywords and phrases and finds the relevant results.
+
+5. Implement the search algorithm in your script so that it can be used by ChatGPT when a user enters a query.
+
+6. Test the script to ensure that it is working correctly and is able to find the correct results for the queries entered by the users.
+
+7. Integrate the script with ChatGPT so that users can start using semantic search within the chatbot.
+
+8. Monitor the performance of the script and adjust it as needed to improve the accuracy of the search results.
+
+
+Semantical search can be used in chatbot applications to help recognize and understand the meaning of user input. This can help a chatbot respond appropriately to the user’s query and provide more accurate results. For example, if a user says “I’m looking for a new car”, a semantical search could help the chatbot understand the context of the user’s question and provide information about car models, dealerships, and financing options.
+
+
+1. Healthcare and Medical Research: Semantic search can help medical researchers to quickly search and identify relevant research articles, medical databases, and patient records, allowing them to find the information they need quickly and efficiently.
+
+2. Online Shopping: Semantic search can help online shoppers to easily find the exact product or service they’re looking for. For example, a user can search for “red shoes size 7” and the search engine will be able to understand the user’s intent and return results for red shoes in size 7.
+
+3. Education: Semantic search can help educators quickly find relevant educational content. For example, a teacher could search for “curriculum for grade 4 math” and the search engine would be able to understand the user’s intent and return results for curricula specifically designed for grade 4 math.
+
+4. Business Intelligence: Semantic search can help business analysts quickly find data and insights they need to make informed decisions. For example, they could search for “market trends for XYZ product” and the search engine would be able to understand the user’s intent and return results for market trends related to that particular product.
+
+Can you estimate the token usage for our use case? We have 1000 chats per month, with an average of 4 questions asked to the API per chat. The typical prompt length is 200 tokens, answer length is 150 tokens, and database entry answer length is 100 tokens.
+
+1000 chats x (4 questions x (200 + 150 + 100)) = 1,200,000 tokens
+
+what is the formula to calculate the number of tokens based on prompts
+
+The formula to calculate the number of tokens based on prompts is:
+
+Number of Tokens = Number of Prompts x Number of Responses per Prompt
+If there are 5 prompts and each prompt has 3 responses, then the number of tokens is 15 (5 x 3 = 15).
+
+To determine the number of prompts in chatgpt, you can use the API command "prompts_count" which will return the number of prompts in the chatgpt. This can be useful if the chatgpt is lengthy and you want to quickly figure out how many prompts are stored in the chatgpt.
+
+what tech stack can I use for the semantic search database, visual interface, and user-facing chatbot widget?
+
+1. For the Semantic Search Database:
+- Apache Solr/Elasticsearch 
+- Neo4j Graph Database
+- MongoDB
+
+2. For the Visual Interface:
+- HTML/CSS
+- JavaScript/jQuery
+- React
+- Angular
+
+3. For the User-Facing Chatbot Widget:
+- DialogFlow
+- LUIS
+- RASA
+
+

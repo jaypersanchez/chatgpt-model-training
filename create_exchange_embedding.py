@@ -37,7 +37,8 @@ def get_embedding(text, model="text-embedding-ada-002"):
    return openai.Embedding.create(input = [text], model=model)['data'][0]['embedding']
 
 def create_embedding():
-  with open('./models/cleaned_data.csv', 'r') as f:
+  with open(
+            , 'r') as f:
     reader = csv.reader(f)
     with open('./models/exchange_embeddings.csv', 'w', newline='') as f:
       writer = csv.writer(f)
@@ -53,17 +54,18 @@ def semantic_search(text):
   pprint = True
   datafile_path = "./models/exchange_embeddings.csv"
   df = pd.read_csv(datafile_path)
-  #df['ada_embedding'] = df.ada_embedding.apply(eval).apply(np.array)
+  df['text']
+  df['embedding'] = df['text'].apply(eval).apply(np.array).astype(np.float)
   #peform search
   search_text_embedding = get_embedding(
-    text,
+    df['text'],
     model = embedding_model
   )
-  df["similarity"] = df.embedding.apply(lambda x: cosine_similarity(x, search_text_embedding))
+  df["similarity"] = df['text'].apply(lambda x: cosine_similarity(x, search_text_embedding))
   results = (
         df.sort_values("similarity", ascending=False)
         .head(n)
-        .combined.str.replace("Title: ", "")
+        .text.str.replace("Title: ", "")
         .str.replace("; Content:", ": ")
   )
   if pprint:
