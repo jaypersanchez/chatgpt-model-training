@@ -28,21 +28,20 @@ def prepareData():
       if new_text_data == '':
         new_text_data = 'N/A' 
       #append the new_text_data to the cleaned_data.csv
-      with open('./models/cleaned_data.csv', 'a', newline="") as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerow([new_text_data])
-        
+      with open('./models/cleaned_data.csv', 'a', newline="", encoding='utf-8') as csvfile:
+        writer = csv.writer(csvfile, escapechar=' ', delimiter=',', quoting=csv.QUOTE_NONE)
+        writer.writerow([f'{new_text_data},'])
+
 def get_embedding(text, model="text-embedding-ada-002"):
    text = text.strip()
    return openai.Embedding.create(input = [text], model=model)['data'][0]['embedding']
 
 def create_embedding():
-  with open(
-            , 'r') as f:
+  with open('./models/cleaned_data.csv', 'r') as f:
     reader = csv.reader(f)
     with open('./models/exchange_embeddings.csv', 'w', newline='') as f:
       writer = csv.writer(f)
-      writer.writerow(['Text', 'Embedding'])
+      #writer.writerow(['Text', 'Embedding'])
       for row in reader:
           text = row[0]
           embedding = get_embedding(text)
@@ -74,6 +73,6 @@ def semantic_search(text):
             print()
   return results
         
-#prepareData()
+prepareData()
 #embedding_vector = create_embedding()
-semantic_search("CANADIAN SECURITIES")
+#semantic_search("CANADIAN SECURITIES")
