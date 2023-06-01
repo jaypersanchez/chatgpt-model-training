@@ -11,10 +11,6 @@ model = SentenceTransformer('paraphrase-MiniLM-L6-v2')
 
 
 documents = [
-    "I love watching movies.",
-    "The best pizza is in Italy.",
-    "I enjoy swimming in the ocean.",
-    "Machine learning is fascinating.",
     "GB  EURONEXT    UK  -  REPORTING  SERVICES  DRSP  DRSP  WWW.EURONEXT.COM",
     "CA  CANADIAN  SECURITIES  EXCHANGE  XCNQ  XCNQ  WWW.THECSE.COM",
     "CA  CANADIAN  SECURITIES  EXCHANGE  -  PURE  PURE  XCNQ  WWW.THECSE.COM",
@@ -55,20 +51,18 @@ def semantic_search(query, embeddings, top_k=1):
     query_embedding = model.encode([query])[0]
     #print(query_embedding)
     similarities = cosine_similarity([query_embedding], embeddings)[0]
-    #print(similarities)
+    print(similarities)
     top_indices = np.argsort(similarities)[-top_k:][::-1]
     #print(top_indices)
     return [(index, similarities[index]) for index in top_indices]
 
-
-
 # Call to generate embeddings from the documents array
 #document_embeddings = generate_embeddings(documents)
 document_embeddings = model.encode(documents)
-#print(document_embeddings)
+print(document_embeddings)
 #perform a semantic search
 #query = "What are your thoughts about artificial intelligence?"
-query = "what are in Canada?"
+query = "what exchanges are in Canada?"
 results = semantic_search(query, document_embeddings)
 #print(results)
 for index, similarity in results:
